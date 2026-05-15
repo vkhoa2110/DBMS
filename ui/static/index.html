@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Helpdesk Risk Triage</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">AI</span>
+        <div>
+          <h1>Helpdesk Risk Triage</h1>
+          <p>Customer feedback semantic search</p>
+        </div>
+      </div>
+
+      <section class="panel compact">
+        <div class="panel-title">Database</div>
+        <dl class="metrics" id="overview">
+          <div><dt>Feedback</dt><dd>...</dd></div>
+          <div><dt>Embedded</dt><dd>...</dd></div>
+          <div><dt>Critical</dt><dd>...</dd></div>
+          <div><dt>VIP</dt><dd>...</dd></div>
+        </dl>
+      </section>
+
+      <section class="panel compact">
+        <div class="panel-title">Issue Groups</div>
+        <div class="issue-list" id="issues"></div>
+      </section>
+    </aside>
+
+    <section class="workspace">
+      <header class="toolbar">
+        <div>
+          <div class="eyebrow">SQL Server demo mode</div>
+          <h2>Keyword search vs semantic risk triage</h2>
+        </div>
+        <button id="refreshBtn" class="secondary">Refresh</button>
+      </header>
+
+      <section class="query-surface">
+        <label for="question">Natural language question</label>
+        <textarea id="question" rows="3">khách hàng bị trừ tiền dù giao dịch thất bại</textarea>
+
+        <div class="controls">
+          <label>
+            Mode
+            <select id="mode">
+              <option value="semantic">Semantic-like</option>
+              <option value="keyword">Keyword</option>
+            </select>
+          </label>
+          <label>
+            Keyword
+            <input id="keyword" value="trừ tiền">
+          </label>
+          <label>
+            Segment
+            <select id="segment">
+              <option value="">All</option>
+              <option>VIP</option>
+              <option>Premier</option>
+              <option>SME</option>
+              <option>Mass</option>
+            </select>
+          </label>
+          <label>
+            Risk
+            <select id="risk">
+              <option value="">All</option>
+              <option>Critical</option>
+              <option>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+            </select>
+          </label>
+          <label>
+            Days
+            <input id="daysBack" type="number" min="1" max="365" value="30">
+          </label>
+          <button id="searchBtn" class="primary">Search</button>
+          <button id="vipBtn" class="secondary">VIP Critical</button>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <section class="panel results-panel">
+          <div class="panel-heading">
+            <div>
+              <div class="panel-title">Search Results</div>
+              <p id="resultMeta">Ready</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Product</th>
+                  <th>Segment</th>
+                  <th>Risk</th>
+                  <th>Feedback</th>
+                  <th>Score</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="resultsBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="right-stack">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <div class="panel-title">Risk Triage</div>
+                <p>Top semantic hits grouped by product and risk</p>
+              </div>
+            </div>
+            <div id="triageList" class="triage-list"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <div class="panel-title">Similar Cases</div>
+                <p id="similarMeta">Select a case from results</p>
+              </div>
+            </div>
+            <div id="similarList" class="similar-list"></div>
+          </section>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div id="vectorModal" class="modal" hidden>
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="vectorModalTitle">
+      <header class="modal-header">
+        <div>
+          <div class="panel-title" id="vectorModalTitle">Embedding vector</div>
+          <p id="vectorModalMeta">Loading...</p>
+        </div>
+        <button type="button" class="secondary" data-modal-close>Close</button>
+      </header>
+      <p id="vectorModalText" class="modal-feedback"></p>
+      <dl id="vectorModalStats" class="metrics"></dl>
+      <div class="modal-actions">
+        <button type="button" class="secondary" id="vectorCopyBtn">Copy JSON</button>
+        <span id="vectorCopyStatus" class="muted"></span>
+      </div>
+      <div class="modal-preview">
+        <div class="panel-title">First 20 dimensions</div>
+        <pre id="vectorPreview"></pre>
+      </div>
+      <div class="modal-preview">
+        <div class="panel-title">Full vector</div>
+        <pre id="vectorFull" class="scroll"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
+
